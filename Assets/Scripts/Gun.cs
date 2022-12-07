@@ -9,7 +9,7 @@ public class Gun : MonoBehaviour
     [SerializeField] LayerMask targetLayer;
     AudioSource gunAudio;
     [SerializeField] AudioClip laserSFX;
-    RaycastHit hit;
+    public Vector3 hitloc;
 
 
     private void Awake()
@@ -40,10 +40,12 @@ public class Gun : MonoBehaviour
 
     private void FireRaycast()
     {
+        RaycastHit hit;
         if (Physics.Raycast(raycastOrigin.position, raycastOrigin.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, targetLayer))
         {
            Debug.Log($"hit target {hit.transform.name} at location {hit.point}");
            hit.transform.SendMessage("HitByRay");
+           hitloc = hit.point; 
 
         }
     }
