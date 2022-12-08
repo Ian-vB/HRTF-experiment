@@ -1,17 +1,22 @@
 using UnityEngine;
 using System.Collections;
+using System.IO;
+using System;
 using UnityEngine.XR.Interaction.Toolkit;
-
-
+using System.Linq;
+using System.Reflection;
+using System.Collections.Generic;
 
 public class Sound_spawner : MonoBehaviour
 {
     [SerializeField] GameObject sphere;
     [SerializeField] XRGrabInteractable grabInteractable;
     [SerializeField] GameObject gunobj;
+    [SerializeField] string subjectName;
+    // Get gun object to get racast location
     Gun gun;
     Vector3[] soundLocations;
-
+    Vector3[] soundlocRandom;
 
     GameObject soundObj;
     AudioSource sound;
@@ -19,15 +24,23 @@ public class Sound_spawner : MonoBehaviour
     float radius;
     Vector3 randPos;
     int timesFired;
+    bool start;
+    int index;
+    float totalDist;
 
 
     void Start()
     {
+        // Instantiate starting variables
         gun = gunobj.GetComponent<Gun>();
         sound = gameObject.GetComponent<AudioSource>();
         radius = 2.9F;
         randPos = gameObject.transform.position;
-        timesFired = 0;
+        timesFired = -1;
+        index = 0;
+        totalDist = 0;
+
+        start = false;
         //soundLocations = new Vector3[18];
         SphericalToCartesian(radius, 0.125F*Mathf.PI, 0.6F);
         soundLocations = new[] { SphericalToCartesian(radius, 0.125F * Mathf.PI, 0.6F), // Elevation 1, angles in increments of 1/8 pi radian.
@@ -51,6 +64,8 @@ public class Sound_spawner : MonoBehaviour
                                  SphericalToCartesian(radius, 1.25F * Mathf.PI, 1.2F),
                                  SphericalToCartesian(radius, 1.75F * Mathf.PI, 1.2F)
                                                                                       };
+        soundlocRandom = new Vector3[18];
+        Array.Copy(soundLocations, soundlocRandom, soundLocations.Length);
         Shuffle();
     }
 
@@ -74,45 +89,73 @@ public class Sound_spawner : MonoBehaviour
 
     private void TriggerPulled(ActivateEventArgs arg0)
     {
+        
+
         if (timesFired <= 48)
         {
-
-            StartCoroutine(waiter(timesFired));
-            timesFired++;
+            StartCoroutine(waiter());  
         }
+        else
+        {
+            float avg = totalDist / 48;
+            File.AppendAllText($"D:/User Projects/Ian/HRTF-experiment-data/{subjectName}.txt", $"{totalDist} {avg} \n");
+        }
+        
     }
 
-    IEnumerator waiter(int timesFired)
+    IEnumerator waiter()
     {
-        int index = timesFired;
         yield return new WaitForSeconds(1);
-        if (timesFired >= 18 && timesFired <= 36)
+
+
+        if (timesFired != -1)
         {
-            Shuffle();
-            index = timesFired - 18;
+            
+            Debug.Log($"index: {index}");
+
+            // Get raycast from gun and calculate distance to soundsource
+            hitloc = gun.hitloc;
+            float dist = Vector3.Distance(hitloc, soundlocRandom[index]);
+            Debug.Log($"Soundlocation: {soundlocRandom[index]}");
+
+            Debug.Log($"Distance between sound and hit is {dist}");
+            totalDist += dist;
+            // Reference back to original soundlocations array to get original index of shuffled locations and save to file.
+            int soundNumber = Array.IndexOf(soundLocations, soundlocRandom[index]);
+            File.AppendAllText($"D:/User Projects/Ian/HRTF-experiment-data/{subjectName}.txt", $"{soundNumber} {dist} \n");
+
+            // Reshuffle when all locations have been played
+            if (timesFired == 17 || timesFired == 35)
+            {
+                Shuffle();
+                index = 0;
+            }
+            else
+            {
+                index++;
+            }
+            gameObject.transform.position = soundlocRandom[index];
+            sound.Play();
         }
-        if(timesFired >= 36)
+        else
         {
-            Shuffle();
-            index = timesFired - 36;
+            gameObject.transform.position = soundlocRandom[0];
+            sound.Play();
         }
-        Debug.Log($"array index: {index}");
-        hitloc = gun.hitloc;
-        float dist = Vector3.Distance(hitloc, soundLocations[0]);
-        Debug.Log($"Distance between sound and hit is {dist}");
-        gameObject.transform.position = soundLocations[index];
-        sound.Play();
+        timesFired++;
+        
+
     }
 
     public void Shuffle()
     {
         Vector3 tempGO;
-        for (int i = 0; i < soundLocations.Length - 1; i++)
+        for (int i = 0; i < soundlocRandom.Length - 1; i++)
         {
-            int rnd = Random.Range(i, soundLocations.Length);
-            tempGO = soundLocations[rnd];
-            soundLocations[rnd] = soundLocations[i];
-            soundLocations[i] = tempGO;
+            int rnd = UnityEngine.Random.Range(i, soundlocRandom.Length);
+            tempGO = soundlocRandom[rnd];
+            soundlocRandom[rnd] = soundlocRandom[i];
+            soundlocRandom[i] = tempGO;
         }
     }
 

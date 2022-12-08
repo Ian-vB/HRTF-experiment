@@ -44,8 +44,8 @@ public class Gun : MonoBehaviour
         if (Physics.Raycast(raycastOrigin.position, raycastOrigin.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, targetLayer))
         {
            Debug.Log($"hit target {hit.transform.name} at location {hit.point}");
-           hit.transform.SendMessage("HitByRay");
-           hitloc = hit.point; 
+           //hit.transform.SendMessage("HitByRay");
+           hitloc = hit.point;
 
         }
     }
