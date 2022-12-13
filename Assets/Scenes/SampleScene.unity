@@ -3213,7 +3213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   directBinaural: 1
-  interpolation: 0
+  interpolation: 1
   distanceAttenuation: 0
   distanceAttenuationInput: 0
   distanceAttenuationValue: 1
@@ -3290,7 +3290,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 1fd31868d68903d4f9e2c4a3b7ef98f3, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 29bca66f2b438e0438cb8c84a3391473, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
