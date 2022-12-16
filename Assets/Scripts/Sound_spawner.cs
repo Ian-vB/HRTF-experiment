@@ -13,7 +13,7 @@ public class Sound_spawner : MonoBehaviour
     [SerializeField] XRGrabInteractable grabInteractable;
     [SerializeField] GameObject gunobj;
     [SerializeField] string subjectName;
-    // Get gun object to get racast location
+    // Get gun object to get raycast location
     Gun gun;
     Vector3[] soundLocations;
     Vector3[] soundlocRandom;
@@ -40,36 +40,24 @@ public class Sound_spawner : MonoBehaviour
         index = 0;
         totalDist = 0;
 
-        start = false;
-        //soundLocations = new Vector3[18];
-        SphericalToCartesian(radius, 0.125F*Mathf.PI, 0.6F);
-        soundLocations = new[] { SphericalToCartesian(radius, 0.125F * Mathf.PI, 0.6F), // Elevation 1, angles in increments of 1/8 pi radian.
-                                 SphericalToCartesian(radius, 0.375F * Mathf.PI, 0.6F),
-                                 SphericalToCartesian(radius, 0.625F * Mathf.PI, 0.6F),
-                                 SphericalToCartesian(radius, 0.875F * Mathf.PI, 0.6F),
-                                 SphericalToCartesian(radius, 1.125F * Mathf.PI, 0.6F),
-                                 SphericalToCartesian(radius, 1.375F * Mathf.PI, 0.6F),
-                                 SphericalToCartesian(radius, 1.625F * Mathf.PI, 0.6F),
-                                 SphericalToCartesian(radius, 1.875F * Mathf.PI, 0.6F),
-
-                                 SphericalToCartesian(radius, 0.333F * Mathf.PI, 0.9F), // Elevation 2
-                                 SphericalToCartesian(radius, 0.666F * Mathf.PI, 0.9F),
-                                 SphericalToCartesian(radius, Mathf.PI, 0.9F),
-                                 SphericalToCartesian(radius, 1.333F * Mathf.PI, 0.9F),
-                                 SphericalToCartesian(radius, 1.666F * Mathf.PI, 0.9F),
-                                 SphericalToCartesian(radius, 2 * Mathf.PI, 0.9F),
-
-                                 SphericalToCartesian(radius, 0.25F * Mathf.PI, 1.2F), // Elevation 3
-                                 SphericalToCartesian(radius, 0.75F * Mathf.PI, 1.2F),
-                                 SphericalToCartesian(radius, 1.25F * Mathf.PI, 1.2F),
-                                 SphericalToCartesian(radius, 1.75F * Mathf.PI, 1.2F)
-                                                                                      };
-        soundlocRandom = new Vector3[18];
+        // Create evenly spaced soundlocations on sphere with Fibonacci agorithm
+        soundLocations = new Vector3[20];
+        soundLocations = fibonacciShpere(40, radius);
+        Debug.Log($"amount of locations: {soundLocations.Length}");
+        printarray(soundLocations);
+        soundlocRandom = new Vector3[20];
         Array.Copy(soundLocations, soundlocRandom, soundLocations.Length);
         Shuffle();
     }
 
+    public static void printarray(Vector3[] arr)
+    {
+        for (int i = 0; i < arr.Length; i++)
+        {
+            Debug.Log($"{arr[i]}");
 
+        }
+    }
 
 
     public static Vector3 SphericalToCartesian(float radius, float polar, float elevation)
@@ -82,6 +70,32 @@ public class Sound_spawner : MonoBehaviour
         return loc;
     }
 
+    public static Vector3[] fibonacciShpere(float samples, float radius)
+    {
+
+        List<Vector3> points = new List<Vector3>();
+        for (int j = 0; j < samples; j++) {
+            float i = j;
+            float k = i + .5f;
+
+            float phi = Mathf.Acos(1f - 2f * k / samples);
+            float theta = Mathf.PI * (1 + Mathf.Sqrt(5)) * k;
+
+            float x = Mathf.Cos(theta) * Mathf.Sin(phi) * radius;
+            float y = Mathf.Sin(theta) * Mathf.Sin(phi) * radius;
+            float z = Mathf.Cos(phi) * radius;
+            
+            // Only keep points above 0 for half sphere
+            if (y > 0)
+            {
+                Debug.Log($"vars: {j} {x} {y} {z}");
+                points.Add(new Vector3(x, y, z));
+                //Debug.Log($"in arr: {points[j]}");
+            }
+        }
+        return points.ToArray();
+    }
+
     private void OnEnable() => grabInteractable.activated.AddListener(TriggerPulled);
 
     private void OnDisable() => grabInteractable.activated.RemoveListener(TriggerPulled);
@@ -91,7 +105,7 @@ public class Sound_spawner : MonoBehaviour
     {
         
 
-        if (timesFired <= 48)
+        if (timesFired <= 59)
         {
             StartCoroutine(waiter());  
         }
@@ -107,7 +121,7 @@ public class Sound_spawner : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
 
-
+        // ignore first shot fired to start experiment
         if (timesFired != -1)
         {
             
@@ -121,11 +135,11 @@ public class Sound_spawner : MonoBehaviour
             Debug.Log($"Distance between sound and hit is {dist}");
             totalDist += dist;
             // Reference back to original soundlocations array to get original index of shuffled locations and save to file.
-            int soundNumber = Array.IndexOf(soundLocations, soundlocRandom[index]);
-            File.AppendAllText($"D:/User Projects/Ian/HRTF-experiment-data/{subjectName}.txt", $"{soundNumber} {dist} \n");
+            //int soundNumber = Array.IndexOf(soundLocations, soundlocRandom[index]);
+            File.AppendAllText($"D:/User Projects/Ian/HRTF-experiment-data/{subjectName}.txt", $"{soundlocRandom[index]} {hitloc} \n");
 
             // Reshuffle when all locations have been played
-            if (timesFired == 17 || timesFired == 35)
+            if (timesFired == 19 || timesFired == 39)
             {
                 Shuffle();
                 index = 0;
@@ -146,7 +160,7 @@ public class Sound_spawner : MonoBehaviour
         
 
     }
-
+    // Shuffle the random sound locations in place
     public void Shuffle()
     {
         Vector3 tempGO;
