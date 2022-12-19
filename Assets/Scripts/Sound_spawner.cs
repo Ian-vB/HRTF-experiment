@@ -41,11 +41,11 @@ public class Sound_spawner : MonoBehaviour
         totalDist = 0;
 
         // Create evenly spaced soundlocations on sphere with Fibonacci agorithm
-        soundLocations = new Vector3[20];
-        soundLocations = fibonacciShpere(40, radius);
+        soundLocations = new Vector3[16];
+        soundLocations = fibonacciShpere(32, radius);
         Debug.Log($"amount of locations: {soundLocations.Length}");
-        printarray(soundLocations);
-        soundlocRandom = new Vector3[20];
+        //printarray(soundLocations);
+        soundlocRandom = new Vector3[16];
         Array.Copy(soundLocations, soundlocRandom, soundLocations.Length);
         Shuffle();
     }
@@ -105,21 +105,21 @@ public class Sound_spawner : MonoBehaviour
     {
         
 
-        if (timesFired <= 59)
+        if (timesFired <= 46)
         {
             StartCoroutine(waiter());  
         }
         else
         {
-            float avg = totalDist / 48;
-            File.AppendAllText($"D:/User Projects/Ian/HRTF-experiment-data/{subjectName}.txt", $"{totalDist} {avg} \n");
+            //float avg = totalDist / 48;
+            //File.AppendAllText($"D:/User Projects/Ian/HRTF-experiment-data/{subjectName}.txt", $"{totalDist} {avg} \n");
         }
         
     }
 
     IEnumerator waiter()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(2);
 
         // ignore first shot fired to start experiment
         if (timesFired != -1)
@@ -139,7 +139,7 @@ public class Sound_spawner : MonoBehaviour
             File.AppendAllText($"D:/User Projects/Ian/HRTF-experiment-data/{subjectName}.txt", $"{soundlocRandom[index]} {hitloc} \n");
 
             // Reshuffle when all locations have been played
-            if (timesFired == 19 || timesFired == 39)
+            if (timesFired == 15 || timesFired == 31)
             {
                 Shuffle();
                 index = 0;
