@@ -2692,4 +2692,4 @@ MonoBehaviour:
   sphere: {fileID: 782628375}
   grabInteractable: {fileID: 1693481628}
   gunobj: {fileID: 1693481626}
-  subjectName: Subject2-personal
+  subjectName: subject2-personal
