@@ -138,9 +138,11 @@ public class Sound_spawner : MonoBehaviour
             // Reference back to original soundlocations array to get original index of shuffled locations and save to file.
             //int soundNumber = Array.IndexOf(soundLocations, soundlocRandom[index]);
             string path = Path.Combine(Application.persistentDataPath, $"{subjectName}.txt");
-            //Debug.Log($"file path: {path}");
-            File.AppendAllText($"D:/User Projects/Ian/HRTF-experiment-data/{subjectName}.txt", $"{soundlocRandom[index]} {hitloc} \n");
-            //File.AppendAllText(path, $"{soundlocRandom[index]} {hitloc} \n");
+            Debug.Log($"file path: {path}");
+            // Use this line when using Unity play mode with Oculus link
+            //File.AppendAllText($"D:/User Projects/Ian/HRTF-experiment-data/{subjectName}.txt", $"{soundlocRandom[index]} {hitloc} \n");
+            // Use this line when using running the app on the Quest 2
+            File.AppendAllText(path, $"{soundlocRandom[index]} {hitloc} \n");
 
             // Reshuffle when all locations have been played
             if (timesFired == 15 || timesFired == 31)
