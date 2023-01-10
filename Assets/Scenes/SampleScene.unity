@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2400,6 +2400,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c91aa9c06193a6045aac1035ca9e5c3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HRTF_index: 1
 --- !u!4 &1767878758
 Transform:
   m_ObjectHideFlags: 0
@@ -2736,4 +2737,4 @@ MonoBehaviour:
   sphere: {fileID: 782628375}
   grabInteractable: {fileID: 1693481628}
   gunobj: {fileID: 1693481626}
-  subjectName: subject2-personal
+  subjectName: subject4-personal
