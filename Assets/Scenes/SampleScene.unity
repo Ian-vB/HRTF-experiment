@@ -2400,7 +2400,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c91aa9c06193a6045aac1035ca9e5c3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HRTF_index: 0
+  HRTF_index: 1
 --- !u!4 &1767878758
 Transform:
   m_ObjectHideFlags: 0
@@ -2737,4 +2737,4 @@ MonoBehaviour:
   sphere: {fileID: 782628375}
   grabInteractable: {fileID: 1693481628}
   gunobj: {fileID: 1693481626}
-  subjectName: subject6
+  subjectName: subject7-personal
