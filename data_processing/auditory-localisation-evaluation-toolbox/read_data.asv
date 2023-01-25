@@ -219,7 +219,7 @@ group = [1,2];
 positions = [1 1.1];
 boxplot(Cmat, group, 'Positions',positions);
 ylabel('Error angle in degrees')
-title("Global localization errors")
+title()
 
 set(gca,'xtick',[mean(positions(1:2))])
 set(gca,'xticklabel',{'Global great circle error'})
@@ -237,20 +237,16 @@ saveas(gcf,'GlobalError.png')
 
 
 
-
-disp(mean(cell2mat(precisionRatio)))
-disp(mean(cell2mat(frontBackRatio)))
-disp(mean(cell2mat(upDownRatio)))
-disp(mean(cell2mat(leftRightRatio)))
-disp(mean(cell2mat(combinedRatio)))
-
-disp(mean(cell2mat(precisionRatioPer)))
-disp(mean(cell2mat(frontBackRatioPer)))
-disp(mean(cell2mat(upDownRatioPer)))
-disp(mean(cell2mat(leftRightRatioPer)))
-disp(mean(cell2mat(combinedRatioPer)))
-
-
+% disp(mean(cell2mat(greatCircErrorLocal)))
+% disp(mean(cell2mat(errorAzi)))
+% disp(mean(cell2mat(errorAziSign)))
+% disp(mean(cell2mat(errorEle)))
+% disp(mean(cell2mat(errorEleSign)))
+% disp(mean(cell2mat(precisionRatio)))
+% disp(mean(cell2mat(frontBackRatio)))
+% disp(mean(cell2mat(upDownRatio)))
+% disp(mean(cell2mat(leftRightRatio)))
+% disp(mean(cell2mat(combinedRatio)))
 
 
 
